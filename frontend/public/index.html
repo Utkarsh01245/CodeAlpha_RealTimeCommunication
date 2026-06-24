@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ConnectX — Real-Time Video Conferencing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <!-- ── Navbar ─────────────────────────────────────────────────────── -->
+    <nav class="navbar">
+      <div class="nav-brand">
+        <span class="logo-icon">⬡</span>
+        <span class="brand-name">ConnectX</span>
+      </div>
+      <div class="nav-auth" id="navAuth">
+        <button class="btn btn-ghost" onclick="showAuth('login')">Sign In</button>
+        <button class="btn btn-primary" onclick="showAuth('register')">Get Started</button>
+      </div>
+      <div class="nav-user hidden" id="navUser">
+        <span id="navUsername" class="nav-username"></span>
+        <button class="btn btn-ghost" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <!-- ── Hero ──────────────────────────────────────────────────────── -->
+    <section class="hero" id="heroSection">
+      <div class="hero-content">
+        <div class="hero-badge">🎥 CodeAlpha — Task 4</div>
+        <h1 class="hero-title">
+          Real-Time<br /><span class="gradient-text">Video Conferencing</span><br />& Collaboration
+        </h1>
+        <p class="hero-subtitle">
+          HD video calls, screen sharing, live whiteboard, file sharing, and encrypted messaging — all in one platform.
+        </p>
+        <div class="hero-features">
+          <span class="feature-pill">📹 Multi-user Video</span>
+          <span class="feature-pill">🖥 Screen Share</span>
+          <span class="feature-pill">✏️ Whiteboard</span>
+          <span class="feature-pill">📁 File Share</span>
+          <span class="feature-pill">🔐 Encrypted</span>
+        </div>
+        <div class="hero-cta">
+          <button class="btn btn-primary btn-lg" onclick="showAuth('register')">
+            Create Free Account
+          </button>
+          <button class="btn btn-secondary btn-lg" onclick="quickJoin()">
+            Quick Join
+          </button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="video-grid-preview">
+          <div class="vp vp-1">
+            <div class="vp-avatar">M</div>
+            <div class="vp-label">Mehul</div>
+          </div>
+          <div class="vp vp-2">
+            <div class="vp-avatar" style="background:#7c3aed">A</div>
+            <div class="vp-label">Arjun</div>
+          </div>
+          <div class="vp vp-3">
+            <div class="vp-avatar" style="background:#059669">P</div>
+            <div class="vp-label">Priya</div>
+          </div>
+          <div class="vp vp-4">
+            <div class="vp-avatar" style="background:#dc2626">R</div>
+            <div class="vp-label">Rahul</div>
+          </div>
+        </div>
+        <div class="preview-controls">
+          <span class="ctrl-btn active">🎤</span>
+          <span class="ctrl-btn active">📹</span>
+          <span class="ctrl-btn">🖥</span>
+          <span class="ctrl-btn red">📵</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Dashboard (after login) ────────────────────────────────────── -->
+    <section class="dashboard hidden" id="dashboardSection">
+      <div class="dash-header">
+        <h2>Welcome back, <span id="dashUsername" class="gradient-text"></span> 👋</h2>
+        <p>Create or join a meeting room to get started.</p>
+      </div>
+      <div class="dash-grid">
+        <!-- Create Room -->
+        <div class="dash-card">
+          <div class="dash-card-icon">🎯</div>
+          <h3>Create New Room</h3>
+          <p>Start a new video conference and invite others</p>
+          <input
+            type="text"
+            id="roomNameInput"
+            placeholder="Room name (optional)"
+            class="input-field"
+          />
+          <button class="btn btn-primary w-full" onclick="createRoom()">
+            + Create Room
+          </button>
+        </div>
+        <!-- Join Room -->
+        <div class="dash-card">
+          <div class="dash-card-icon">🔗</div>
+          <h3>Join a Room</h3>
+          <p>Enter a room ID shared by the host</p>
+          <input
+            type="text"
+            id="joinRoomInput"
+            placeholder="Enter Room ID (e.g. A1B2C3D4)"
+            class="input-field"
+          />
+          <button class="btn btn-secondary w-full" onclick="joinRoom()">
+            → Join Room
+          </button>
+        </div>
+        <!-- Features Card -->
+        <div class="dash-card dash-card-features">
+          <div class="dash-card-icon">⚡</div>
+          <h3>What's Included</h3>
+          <ul class="feature-list">
+            <li>✅ HD Video Calling (Multi-User)</li>
+            <li>✅ Screen Sharing</li>
+            <li>✅ Live Whiteboard</li>
+            <li>✅ Encrypted File Sharing</li>
+            <li>✅ Real-Time Chat</li>
+            <li>✅ JWT Authentication</li>
+            <li>✅ WebRTC P2P Media</li>
+            <li>✅ Socket.io Signaling</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Auth Modal ─────────────────────────────────────────────────── -->
+    <div class="modal-overlay hidden" id="authModal">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-tabs">
+          <button class="tab active" id="loginTab" onclick="switchTab('login')">Sign In</button>
+          <button class="tab" id="registerTab" onclick="switchTab('register')">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm">
+          <h2 class="modal-title">Welcome Back</h2>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" class="input-field" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" class="input-field" />
+          </div>
+          <div class="form-error hidden" id="loginError"></div>
+          <button class="btn btn-primary w-full" onclick="login()">Sign In →</button>
+          <p class="auth-switch">
+            No account? <a href="#" onclick="switchTab('register')">Create one</a>
+          </p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerForm" class="hidden">
+          <h2 class="modal-title">Create Account</h2>
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="regUsername" placeholder="yourname" class="input-field" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="regEmail" placeholder="you@example.com" class="input-field" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="regPassword" placeholder="Min. 6 characters" class="input-field" />
+          </div>
+          <div class="form-error hidden" id="registerError"></div>
+          <button class="btn btn-primary w-full" onclick="register()">Create Account →</button>
+          <p class="auth-switch">
+            Have an account? <a href="#" onclick="switchTab('login')">Sign in</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Quick Join Modal ────────────────────────────────────────────── -->
+    <div class="modal-overlay hidden" id="quickModal">
+      <div class="modal">
+        <button class="modal-close" onclick="document.getElementById('quickModal').classList.add('hidden')">✕</button>
+        <h2 class="modal-title">🔗 Quick Join</h2>
+        <p style="color:var(--text-muted);margin-bottom:1rem">Enter your name and room ID to join instantly (no account needed)</p>
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="quickName" placeholder="Enter your name" class="input-field" />
+        </div>
+        <div class="form-group">
+          <label>Room ID</label>
+          <input type="text" id="quickRoomId" placeholder="e.g. A1B2C3D4" class="input-field" style="text-transform:uppercase" />
+        </div>
+        <button class="btn btn-primary w-full" onclick="quickJoinNow()">→ Join Room</button>
+      </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+  </body>
+</html>
